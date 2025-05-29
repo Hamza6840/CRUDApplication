@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRUDApplication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class StudentController : ControllerBase
     {
@@ -45,6 +45,18 @@ namespace CRUDApplication.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Remove(int id)
+        {
+            var student = await _context.StudentTable.FirstOrDefaultAsync(x => x.Id == id);
+            if(student is not null)
+            {
+                _context.Remove(student);
+                await _context.SaveChangesAsync();
+                return Ok("Student deleted successfully");
+            }
+            return BadRequest("Student does not exist");
+        }
 
     }
 }
